@@ -1,0 +1,514 @@
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "BrainrotDupeGUI"
+ScreenGui.IgnoreGuiInset = false
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = game.CoreGui or player:WaitForChild("PlayerGui")
+
+-- FLOATING TOGGLE CIRCLE
+local CircleToggle = Instance.new("TextButton")
+CircleToggle.Size = UDim2.new(0, 38, 0, 38)
+CircleToggle.Position = UDim2.new(0, 16, 0.5, -19)
+CircleToggle.BackgroundColor3 = Color3.fromRGB(35, 30, 55)
+CircleToggle.BorderSizePixel = 0
+CircleToggle.Text = ""
+CircleToggle.Font = Enum.Font.GothamBold
+CircleToggle.TextSize = 12
+CircleToggle.TextColor3 = Color3.fromRGB(180, 160, 255)
+CircleToggle.ZIndex = 100
+CircleToggle.Parent = ScreenGui
+Instance.new("UICorner", CircleToggle).CornerRadius = UDim.new(1, 0)
+
+local CircleStroke = Instance.new("UIStroke")
+CircleStroke.Thickness = 1.5
+CircleStroke.Color = Color3.fromRGB(90, 70, 160)
+CircleStroke.Transparency = 0.3
+CircleStroke.Parent = CircleToggle
+
+local circleHue = 0
+RunService.Heartbeat:Connect(function(dt)
+    circleHue = (circleHue + dt * 0.5) % 1
+    CircleStroke.Color = Color3.fromHSV(circleHue, 0.5, 0.7)
+end)
+
+-- MAIN FRAME
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 260, 0, 280)
+MainFrame.Position = UDim2.new(0.5, -130, 0.5, -140)
+MainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
+MainFrame.BorderSizePixel = 0
+MainFrame.ZIndex = 1
+MainFrame.Parent = ScreenGui
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Thickness = 2
+MainStroke.Parent = MainFrame
+
+local BorderGradient = Instance.new("UIGradient")
+BorderGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0,   Color3.fromRGB(120, 40, 180)),
+    ColorSequenceKeypoint.new(0.3, Color3.fromRGB(90,  30, 150)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(140, 50, 200)),
+    ColorSequenceKeypoint.new(0.7, Color3.fromRGB(100, 35, 160)),
+    ColorSequenceKeypoint.new(1,   Color3.fromRGB(120, 40, 180)),
+}
+BorderGradient.Parent = MainStroke
+
+local borderBreath = 0
+local borderDir = 1
+RunService.Heartbeat:Connect(function(dt)
+    BorderGradient.Rotation = (BorderGradient.Rotation + dt * 40) % 360
+    borderBreath = borderBreath + dt * borderDir * 0.7
+    if borderBreath >= 1 then borderBreath = 1; borderDir = -1
+    elseif borderBreath <= 0 then borderBreath = 0; borderDir = 1 end
+    MainStroke.Transparency = borderBreath * 0.45
+end)
+
+-- TITLE BAR
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1, 0, 0, 34)
+TitleBar.BackgroundColor3 = Color3.fromRGB(22, 22, 30)
+TitleBar.BorderSizePixel = 0
+TitleBar.Active = true
+TitleBar.ZIndex = 2
+TitleBar.Parent = MainFrame
+Instance.new("UICorner", TitleBar).CornerRadius = UDim.new(0, 12)
+
+local TitleCover = Instance.new("Frame")
+TitleCover.Size = UDim2.new(1, 0, 0, 12)
+TitleCover.Position = UDim2.new(0, 0, 1, -12)
+TitleCover.BackgroundColor3 = Color3.fromRGB(22, 22, 30)
+TitleCover.BorderSizePixel = 0
+TitleCover.ZIndex = 2
+TitleCover.Parent = TitleBar
+
+local AccentLine = Instance.new("Frame")
+AccentLine.Size = UDim2.new(1, -20, 0, 2)
+AccentLine.Position = UDim2.new(0, 10, 1, -1)
+AccentLine.BorderSizePixel = 0
+AccentLine.ZIndex = 3
+AccentLine.Parent = TitleBar
+Instance.new("UICorner", AccentLine).CornerRadius = UDim.new(0, 1)
+
+local AccentGrad = Instance.new("UIGradient")
+AccentGrad.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0,   Color3.fromRGB(40,  140, 220)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(60,  200, 255)),
+    ColorSequenceKeypoint.new(1,   Color3.fromRGB(40,  140, 220)),
+}
+AccentGrad.Parent = AccentLine
+
+RunService.Heartbeat:Connect(function(dt)
+    AccentGrad.Offset = Vector2.new((AccentGrad.Offset.X + dt * 0.3) % 1, 0)
+end)
+
+local Title = Instance.new("TextLabel")
+Title.Text = "BRAINROT DUPE | ∞"
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 11
+Title.TextColor3 = Color3.fromRGB(220, 220, 245)
+Title.BackgroundTransparency = 1
+Title.Size = UDim2.new(1, -60, 1, 0)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.ZIndex = 3
+Title.Parent = TitleBar
+
+local MinBtn = Instance.new("TextButton")
+MinBtn.Size = UDim2.new(0, 20, 0, 20)
+MinBtn.Position = UDim2.new(1, -46, 0.5, -10)
+MinBtn.Text = "-"
+MinBtn.Font = Enum.Font.GothamBold
+MinBtn.TextSize = 12
+MinBtn.TextColor3 = Color3.fromRGB(180, 180, 200)
+MinBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 48)
+MinBtn.BorderSizePixel = 0
+MinBtn.ZIndex = 5
+MinBtn.Parent = TitleBar
+Instance.new("UICorner", MinBtn).CornerRadius = UDim.new(0, 5)
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 20, 0, 20)
+CloseBtn.Position = UDim2.new(1, -24, 0.5, -10)
+CloseBtn.Text = "X"
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextSize = 11
+CloseBtn.TextColor3 = Color3.fromRGB(180, 180, 200)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 48)
+CloseBtn.BorderSizePixel = 0
+CloseBtn.ZIndex = 5
+CloseBtn.Parent = TitleBar
+Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 5)
+
+for _, btn in ipairs({MinBtn, CloseBtn}) do
+    btn.MouseEnter:Connect(function()
+        local c = btn == CloseBtn and Color3.fromRGB(180,60,60) or Color3.fromRGB(50,50,68)
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = c}):Play()
+    end)
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(35,35,48)}):Play()
+    end)
+end
+
+local guiVisible = true
+local function hideGui()
+    MainFrame.Visible = false
+    guiVisible = false
+    CircleToggle.BackgroundColor3 = Color3.fromRGB(55, 45, 80)
+end
+CloseBtn.MouseButton1Click:Connect(hideGui)
+MinBtn.MouseButton1Click:Connect(hideGui)
+
+-- VERTICAL DIVIDER
+local Divider = Instance.new("Frame")
+Divider.Size = UDim2.new(0, 1, 1, -44)
+Divider.Position = UDim2.new(0, 160, 0, 38)
+Divider.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+Divider.BackgroundTransparency = 0.3
+Divider.BorderSizePixel = 0
+Divider.ZIndex = 3
+Divider.Parent = MainFrame
+
+-- =====================================================
+-- LEFT — SCROLL LIST
+-- =====================================================
+local ScrollContainer = Instance.new("Frame")
+ScrollContainer.Size = UDim2.new(0, 152, 1, -42)
+ScrollContainer.Position = UDim2.new(0, 4, 0, 38)
+ScrollContainer.BackgroundTransparency = 1
+ScrollContainer.BorderSizePixel = 0
+ScrollContainer.ZIndex = 2
+ScrollContainer.ClipsDescendants = true
+ScrollContainer.Parent = MainFrame
+
+local SCLabel = Instance.new("TextLabel", ScrollContainer)
+SCLabel.Text = "BRAINROTS"
+SCLabel.Font = Enum.Font.GothamBold
+SCLabel.TextSize = 8
+SCLabel.TextColor3 = Color3.fromRGB(120, 110, 180)
+SCLabel.BackgroundTransparency = 1
+SCLabel.Size = UDim2.new(1, -8, 0, 16)
+SCLabel.Position = UDim2.new(0, 8, 0, 4)
+SCLabel.TextXAlignment = Enum.TextXAlignment.Left
+SCLabel.ZIndex = 3
+
+local Scroll = Instance.new("ScrollingFrame", ScrollContainer)
+Scroll.Size = UDim2.new(1, -4, 1, -22)
+Scroll.Position = UDim2.new(0, 2, 0, 20)
+Scroll.BackgroundTransparency = 1
+Scroll.BorderSizePixel = 0
+Scroll.ScrollBarThickness = 3
+Scroll.ScrollBarImageColor3 = Color3.fromRGB(100, 80, 180)
+Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Scroll.ZIndex = 3
+
+local Layout = Instance.new("UIListLayout", Scroll)
+Layout.Padding = UDim.new(0, 4)
+local SPad = Instance.new("UIPadding", Scroll)
+SPad.PaddingTop = UDim.new(0, 3)
+SPad.PaddingLeft = UDim.new(0, 3)
+SPad.PaddingRight = UDim.new(0, 3)
+SPad.PaddingBottom = UDim.new(0, 3)
+
+-- =====================================================
+-- RIGHT — STATUS + BUTTONS
+-- =====================================================
+local RightPanel = Instance.new("Frame")
+RightPanel.Size = UDim2.new(0, 92, 1, -42)
+RightPanel.Position = UDim2.new(0, 164, 0, 38)
+RightPanel.BackgroundTransparency = 1
+RightPanel.BorderSizePixel = 0
+RightPanel.ZIndex = 2
+RightPanel.Parent = MainFrame
+
+-- STATUS BOX
+local StatusBox = Instance.new("Frame", RightPanel)
+StatusBox.Size = UDim2.new(1, -8, 0, 38)
+StatusBox.Position = UDim2.new(0, 4, 0, 6)
+StatusBox.BackgroundColor3 = Color3.fromRGB(25, 25, 34)
+StatusBox.BorderSizePixel = 0
+StatusBox.ZIndex = 3
+Instance.new("UICorner", StatusBox).CornerRadius = UDim.new(0, 8)
+
+local SBStroke = Instance.new("UIStroke", StatusBox)
+SBStroke.Thickness = 1
+SBStroke.Color = Color3.fromRGB(45, 45, 60)
+SBStroke.Transparency = 0.4
+SBStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local StatusDot = Instance.new("Frame", StatusBox)
+StatusDot.Size = UDim2.new(0, 5, 0, 5)
+StatusDot.Position = UDim2.new(0, 7, 0, 7)
+StatusDot.BackgroundColor3 = Color3.fromRGB(80, 200, 120)
+StatusDot.BorderSizePixel = 0
+StatusDot.ZIndex = 4
+Instance.new("UICorner", StatusDot).CornerRadius = UDim.new(1, 0)
+
+local StatusTitle = Instance.new("TextLabel", StatusBox)
+StatusTitle.Text = "STATUS"
+StatusTitle.Font = Enum.Font.GothamBold
+StatusTitle.TextSize = 7
+StatusTitle.TextColor3 = Color3.fromRGB(120, 110, 180)
+StatusTitle.BackgroundTransparency = 1
+StatusTitle.Size = UDim2.new(1, -16, 0, 12)
+StatusTitle.Position = UDim2.new(0, 14, 0, 2)
+StatusTitle.TextXAlignment = Enum.TextXAlignment.Left
+StatusTitle.ZIndex = 4
+
+local StatusLabel = Instance.new("TextLabel", StatusBox)
+StatusLabel.Text = "Ready"
+StatusLabel.Font = Enum.Font.Gotham
+StatusLabel.TextSize = 8
+StatusLabel.TextColor3 = Color3.fromRGB(160, 255, 180)
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Size = UDim2.new(1, -8, 0, 20)
+StatusLabel.Position = UDim2.new(0, 5, 0, 16)
+StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+StatusLabel.TextWrapped = true
+StatusLabel.ZIndex = 4
+
+local function setStatus(text, color)
+    StatusLabel.Text = text
+    StatusLabel.TextColor3 = color or Color3.fromRGB(160, 255, 180)
+    StatusDot.BackgroundColor3 = color or Color3.fromRGB(80, 200, 120)
+end
+
+-- BUTTON MAKER — no emoji, text only, inner border stroke
+local function makeRightBtn(txt, yOff, bgColor, strokeColor)
+    local b = Instance.new("TextButton", RightPanel)
+    b.Size = UDim2.new(1, -8, 0, 34)
+    b.Position = UDim2.new(0, 4, 0, yOff)
+    b.BackgroundColor3 = bgColor
+    b.BorderSizePixel = 0
+    b.Text = txt
+    b.Font = Enum.Font.GothamBold
+    b.TextSize = 9
+    b.TextColor3 = Color3.fromRGB(210, 210, 235)
+    b.ZIndex = 3
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 8)
+
+    -- inner border stroke
+    local s = Instance.new("UIStroke", b)
+    s.Thickness = 1
+    s.Color = strokeColor
+    s.Transparency = 0.25
+    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+    b.MouseEnter:Connect(function()
+        TweenService:Create(b, TweenInfo.new(0.12), {
+            BackgroundColor3 = Color3.new(
+                math.min(bgColor.R + 0.06, 1),
+                math.min(bgColor.G + 0.06, 1),
+                math.min(bgColor.B + 0.06, 1)
+            )
+        }):Play()
+    end)
+    b.MouseLeave:Connect(function()
+        TweenService:Create(b, TweenInfo.new(0.12), {BackgroundColor3 = bgColor}):Play()
+    end)
+
+    return b, s
+end
+
+-- status ends at yOff 6+38=44, gap 6 = 50
+local RefreshBtn, RefreshStroke = makeRightBtn("REFRESH", 52,  Color3.fromRGB(28, 48, 34), Color3.fromRGB(60, 160, 90))
+local DupeBtn,    DupeStroke    = makeRightBtn("DUPE",    92,  Color3.fromRGB(38, 24, 50),  Color3.fromRGB(130, 55, 190))
+
+-- WATERMARK
+local ytLabel = "bloomscripts on youtube"
+local ytChars = {}
+local ytContainer = Instance.new("Frame", MainFrame)
+ytContainer.Size = UDim2.new(1, 0, 0, 12)
+ytContainer.Position = UDim2.new(0, 0, 1, -14)
+ytContainer.BackgroundTransparency = 1
+ytContainer.ZIndex = 3
+
+local wl = Instance.new("UIListLayout", ytContainer)
+wl.FillDirection = Enum.FillDirection.Horizontal
+wl.HorizontalAlignment = Enum.HorizontalAlignment.Center
+wl.SortOrder = Enum.SortOrder.LayoutOrder
+wl.Padding = UDim.new(0, 0)
+
+for i = 1, #ytLabel do
+    local c = Instance.new("TextLabel", ytContainer)
+    c.Text = ytLabel:sub(i,i)
+    c.Font = Enum.Font.GothamBold
+    c.TextSize = 8
+    c.BackgroundTransparency = 1
+    c.Size = UDim2.new(0, ytLabel:sub(i,i) == " " and 3 or 5, 1, 0)
+    c.ZIndex = 3
+    c.LayoutOrder = i
+    table.insert(ytChars, c)
+end
+
+local ytHue = 0
+RunService.Heartbeat:Connect(function(dt)
+    ytHue = (ytHue + dt * 0.4) % 1
+    for i, ch in ipairs(ytChars) do
+        ch.TextColor3 = Color3.fromHSV((ytHue + (i-1)/#ytChars) % 1, 0.7, 1)
+    end
+end)
+
+-- =====================================================
+-- LIST BUILDER
+-- =====================================================
+local selected = nil
+local buttons = {}
+
+local function clearList()
+    for _, o in ipairs(buttons) do o:Destroy() end
+    buttons = {}
+    selected = nil
+end
+
+function buildList(list)
+    clearList()
+    if #list == 0 then
+        setStatus("None found", Color3.fromRGB(255, 180, 80))
+        local e = Instance.new("TextLabel", Scroll)
+        e.Size = UDim2.new(1, 0, 0, 36)
+        e.BackgroundTransparency = 1
+        e.Text = "No brainrots\non your base"
+        e.Font = Enum.Font.Gotham
+        e.TextSize = 9
+        e.TextWrapped = true
+        e.TextColor3 = Color3.fromRGB(100, 100, 130)
+        e.ZIndex = 4
+        table.insert(buttons, e)
+        return
+    end
+
+    setStatus(#list .. " found", Color3.fromRGB(80, 200, 120))
+
+    for _, br in ipairs(list) do
+        local item = Instance.new("TextButton", Scroll)
+        item.Size = UDim2.new(1, 0, 0, 48)
+        item.BackgroundColor3 = Color3.fromRGB(25, 25, 34)
+        item.BorderSizePixel = 0
+        item.Text = ""
+        item.ZIndex = 4
+        Instance.new("UICorner", item).CornerRadius = UDim.new(0, 8)
+
+        -- INNER BORDER STROKE
+        local iStroke = Instance.new("UIStroke", item)
+        iStroke.Thickness = 1
+        iStroke.Color = Color3.fromRGB(55, 50, 80)
+        iStroke.Transparency = 0.3
+        iStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+        local nLbl = Instance.new("TextLabel", item)
+        nLbl.Size = UDim2.new(1, -8, 0, 24)
+        nLbl.Position = UDim2.new(0, 6, 0, 4)
+        nLbl.BackgroundTransparency = 1
+        nLbl.Text = br.name
+        nLbl.Font = Enum.Font.GothamBold
+        nLbl.TextSize = 10
+        nLbl.TextColor3 = Color3.fromRGB(220, 220, 245)
+        nLbl.TextXAlignment = Enum.TextXAlignment.Left
+        nLbl.TextWrapped = true
+        nLbl.ZIndex = 5
+
+        local gLbl = Instance.new("TextLabel", item)
+        gLbl.Size = UDim2.new(1, -8, 0, 14)
+        gLbl.Position = UDim2.new(0, 6, 0, 30)
+        gLbl.BackgroundTransparency = 1
+        gLbl.Text = br.genText
+        gLbl.Font = Enum.Font.Gotham
+        gLbl.TextSize = 9
+        gLbl.TextColor3 = Color3.fromRGB(80, 200, 120)
+        gLbl.TextXAlignment = Enum.TextXAlignment.Left
+        gLbl.ZIndex = 5
+
+        local function onSelect()
+            selected = br
+            for _, b in ipairs(buttons) do
+                if b:IsA("TextButton") then
+                    TweenService:Create(b, TweenInfo.new(0.12), {
+                        BackgroundColor3 = Color3.fromRGB(25, 25, 34)
+                    }):Play()
+                    local st = b:FindFirstChildWhichIsA("UIStroke")
+                    if st then
+                        st.Color = Color3.fromRGB(55, 50, 80)
+                        st.Transparency = 0.3
+                    end
+                end
+            end
+            TweenService:Create(item, TweenInfo.new(0.12), {
+                BackgroundColor3 = Color3.fromRGB(32, 24, 50)
+            }):Play()
+            iStroke.Color = Color3.fromRGB(130, 80, 220)
+            iStroke.Transparency = 0
+            setStatus("Selected:\n" .. br.name, Color3.fromRGB(140, 100, 255))
+        end
+
+        item.MouseButton1Click:Connect(onSelect)
+        item.TouchTap:Connect(onSelect)
+        table.insert(buttons, item)
+    end
+end
+
+-- EXPOSE
+_G.DupeGUI = {
+    setStatus   = setStatus,
+    buildList   = buildList,
+    getSelected = function() return selected end,
+    onRefresh   = function(fn) RefreshBtn.MouseButton1Click:Connect(fn) end,
+    onDupe      = function(fn) DupeBtn.MouseButton1Click:Connect(fn) end,
+}
+
+-- =====================================================
+-- DRAG
+-- =====================================================
+local function makeDraggable(handle, frame)
+    local dragging = false
+    local dragStart, startPos
+
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (
+            input.UserInputType == Enum.UserInputType.MouseMovement
+            or input.UserInputType == Enum.UserInputType.Touch
+        ) then
+            local d = input.Position - dragStart
+            frame.Position = UDim2.new(
+                startPos.X.Scale, startPos.X.Offset + d.X,
+                startPos.Y.Scale, startPos.Y.Offset + d.Y
+            )
+        end
+    end)
+end
+
+makeDraggable(TitleBar, MainFrame)
+makeDraggable(CircleToggle, CircleToggle)
+
+CircleToggle.MouseButton1Click:Connect(function()
+    guiVisible = not guiVisible
+    MainFrame.Visible = guiVisible
+    CircleToggle.BackgroundColor3 = guiVisible
+        and Color3.fromRGB(35, 30, 55)
+        or  Color3.fromRGB(55, 45, 80)
+end)
