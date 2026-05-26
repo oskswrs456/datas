@@ -1,6 +1,5 @@
 return {
-   list = {"None","Gold","Diamond","Bloodrot","Rainbow","Candy","Lava","Galaxy","YinYang","Radioactive",
-Cursed","Divine","Cyber"},
+   list = {"None","Gold","Diamond","Bloodrot","Rainbow","Candy","Lava","Galaxy","YinYang","Radioactive","Cursed","Divine","Cyber"},
 
    modifiers = {
        ["Gold"]=0.25, ["Diamond"]=0.5, ["Bloodrot"]=1, ["Rainbow"]=9,
