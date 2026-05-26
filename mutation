@@ -1,0 +1,10 @@
+return {
+   list = {"None","Gold","Diamond","Bloodrot","Rainbow","Candy","Lava","Galaxy","YinYang","Radioactive",
+Cursed","Divine","Cyber"},
+
+   modifiers = {
+       ["Gold"]=0.25, ["Diamond"]=0.5, ["Bloodrot"]=1, ["Rainbow"]=9,
+       ["Candy"]=3, ["Lava"]=5, ["Galaxy"]=6, ["YinYang"]=6.5,
+       ["Radioactive"]=7.5, ["Cursed"]=8, ["Divine"]=9, ["Cyber"]=10,
+   },
+}
